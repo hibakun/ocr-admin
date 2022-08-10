@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ocr_admin/pages/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -76,26 +77,22 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: height * 0.01,
                         ),
-                        Container(
-                          width: width,
-                          height: 55,
-                          child: TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter some text";
-                              } else if (value != "admin") {
-                                return "Username incorrect";
-                              }
-                            },
-                            decoration: InputDecoration(
-                              fillColor: Color(0xff93A3B4),
-                              filled: true,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: BorderSide.none,
-                              ),
+                        TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter some text";
+                            } else if (value != "admin") {
+                              return "Username incorrect";
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color(0xff93A3B4),
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -112,26 +109,22 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: height * 0.01,
                         ),
-                        Container(
-                          width: width,
-                          height: 55,
-                          child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Please enter some text";
-                              } else if (value != "admin") {
-                                return "Password incorrect";
-                              }
-                            },
-                            decoration: InputDecoration(
-                              fillColor: Color(0xff93A3B4),
-                              filled: true,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: BorderSide.none,
-                              ),
+                        TextFormField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter some text";
+                            } else if (value != "admin") {
+                              return "Password incorrect";
+                            }
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Color(0xff93A3B4),
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -158,8 +151,13 @@ class _LoginPageState extends State<LoginPage> {
                                     RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30)))),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.setString("user", _emailController.text);
+                                prefs.setString(
+                                    "pass", _passwordController.text);
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
