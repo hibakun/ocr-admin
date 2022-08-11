@@ -39,50 +39,78 @@ class _KeuanganPageState extends State<KeuanganPage> {
                       return SingleChildScrollView(
                         child: Column(
                           children: snapshot.data!.docs
-                              .map((e) => GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => Detail(
-                                            title: e["title"],
-                                            desc: e["desc"],
-                                            imageUrl: e["url"],
-                                          ),
+                              .map(
+                                (e) => GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Detail(
+                                          title: e["title"],
+                                          desc: e["desc"],
+                                          imageUrl: e["url"],
                                         ),
-                                      );
-                                    },
-                                    child: Card(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: ListTile(
-                                        dense: false,
-                                        leading: Image.network(
-                                          e["url"],
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        title: Text(
-                                          e["title"],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        subtitle: Text(
-                                          e["desc"],
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        trailing: IconButton(
-                                          onPressed: () =>
-                                              _collection.doc(e.id).delete(),
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: ListTile(
+                                      dense: false,
+                                      leading: Image.network(
+                                        e["url"],
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                      title: Text(
+                                        e["title"],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      subtitle: Text(
+                                        e["desc"],
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      trailing: IconButton(
+                                        onPressed: () =>
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                content: Text(
+                                                    "Apakah anda yakin ingin menghapus item ini ?"),
+                                                title: Text("Hapus item"),
+                                                actions: [
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        _collection
+                                                            .doc(e.id)
+                                                            .delete();
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text("Ya"),
+                                                  ),
+                                                  FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text("Tidak"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
                                         ),
                                       ),
                                     ),
-                                  ))
+                                  ),
+                                ),
+                              )
                               .toList(),
                         ),
                       );
@@ -131,7 +159,7 @@ class _KeuanganPageState extends State<KeuanganPage> {
                       _descController.clear();
                     }),
                     icon: const Icon(Icons.camera),
-                    label: const Text('camera'),
+                    label: const Text('Camera'),
                   ),
                   ElevatedButton.icon(
                     onPressed: () => imagePicker("gallery",

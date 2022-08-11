@@ -73,7 +73,33 @@ class _MarketingPageState extends State<MarketingPage> {
                                 ),
                                 trailing: IconButton(
                                   onPressed: () =>
-                                      _collection.doc(e.id).delete(),
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          content: Text(
+                                              "Apakah anda yakin ingin menghapus item ini ?"),
+                                          title: Text("Hapus item"),
+                                          actions: [
+                                            FlatButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _collection
+                                                      .doc(e.id)
+                                                      .delete();
+                                                });
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("Ya"),
+                                            ),
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("Tidak"),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                   icon: const Icon(
                                     Icons.delete,
                                     color: Colors.red,
@@ -130,7 +156,7 @@ class _MarketingPageState extends State<MarketingPage> {
                       _descController.clear();
                     }),
                     icon: const Icon(Icons.camera),
-                    label: const Text('camera'),
+                    label: const Text('Camera'),
                   ),
                   ElevatedButton.icon(
                     onPressed: () => imagePicker("gallery",

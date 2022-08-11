@@ -33,48 +33,69 @@ class _PinjamUangPageState extends State<PinjamUangPage> {
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _collection.orderBy("timestamp", descending: true).snapshots(),
+                  stream: _collection
+                      .orderBy("timestamp", descending: true)
+                      .snapshots(),
                   builder: (_, snapshot) {
                     if (snapshot.hasData) {
                       return SingleChildScrollView(
                         child: Column(
                           children: snapshot.data!.docs
-                              .map(
-                                (e) => Container(
-                                  margin: EdgeInsets.only(bottom: 30),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width: width * 0.55,
-                                        height: height * 0.08,
-                                        child: Image.network(
+                              .map((e) => GestureDetector(
+                                    onTap: () {
+                                      openLink(e["link"]);
+                                    },
+                                    child: Card(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: ListTile(
+                                        dense: false,
+                                        leading: Image.network(
                                           e["url"],
+                                          width: 100,
                                           fit: BoxFit.cover,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: height * 0.03,
-                                      ),
-                                      Container(
-                                        width: width / 3,
-                                        height: 45,
-                                        child: ElevatedButton(
-                                          child: Text("Klik Disini"),
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                              Color(0xff1A6296).withOpacity(0.6),
+                                        title: Text(
+                                          e["link"],
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        trailing: IconButton(
+                                          onPressed: () => showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              content: Text(
+                                                  "Apakah anda yakin ingin menghapus item ini ?"),
+                                              title: Text("Hapus item"),
+                                              actions: [
+                                                FlatButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _collection
+                                                          .doc(e.id)
+                                                          .delete();
+                                                    });
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Ya"),
+                                                ),
+                                                FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Tidak"),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          onPressed: () async {
-                                            openLink(e["link"]);
-                                          },
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              )
+                                    ),
+                                  ))
                               .toList(),
                         ),
                       );
@@ -107,7 +128,7 @@ class _PinjamUangPageState extends State<PinjamUangPage> {
                       _linkController.clear();
                     }),
                     icon: const Icon(Icons.camera),
-                    label: const Text('camera'),
+                    label: const Text('Camera'),
                   ),
                   ElevatedButton.icon(
                     onPressed: () =>
