@@ -35,7 +35,14 @@ class _KeuanganPageState extends State<KeuanganPage> {
                       .orderBy("timestamp", descending: true)
                       .snapshots(),
                   builder: (_, snapshot) {
-                    if (snapshot.hasData) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container(
+                        height: 250,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else {
                       return SingleChildScrollView(
                         child: Column(
                           children: snapshot.data!.docs
@@ -74,34 +81,33 @@ class _KeuanganPageState extends State<KeuanganPage> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       trailing: IconButton(
-                                        onPressed: () =>
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                content: Text(
-                                                    "Apakah anda yakin ingin menghapus item ini ?"),
-                                                title: Text("Hapus item"),
-                                                actions: [
-                                                  FlatButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        _collection
-                                                            .doc(e.id)
-                                                            .delete();
-                                                      });
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text("Ya"),
-                                                  ),
-                                                  FlatButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text("Tidak"),
-                                                  ),
-                                                ],
+                                        onPressed: () => showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            content: Text(
+                                                "Apakah anda yakin ingin menghapus item ini ?"),
+                                            title: Text("Hapus item"),
+                                            actions: [
+                                              FlatButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _collection
+                                                        .doc(e.id)
+                                                        .delete();
+                                                  });
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("Ya"),
                                               ),
-                                            ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("Tidak"),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                         icon: const Icon(
                                           Icons.delete,
                                           color: Colors.red,
@@ -114,13 +120,12 @@ class _KeuanganPageState extends State<KeuanganPage> {
                               .toList(),
                         ),
                       );
-                    } else {
-                      return Text("Loading...");
                     }
                   },
                 ),
               ),
               TextFormField(
+                maxLines: null,
                 controller: _titleController,
                 decoration: InputDecoration(
                   filled: true,
@@ -136,6 +141,7 @@ class _KeuanganPageState extends State<KeuanganPage> {
               ),
               TextFormField(
                 controller: _descController,
+                maxLines: null,
                 decoration: InputDecoration(
                   filled: true,
                   hintText: "Deskripsi",
@@ -162,12 +168,14 @@ class _KeuanganPageState extends State<KeuanganPage> {
                     label: const Text('Camera'),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () => imagePicker("gallery",
-                            _titleController.text, _descController.text)
-                        .then((value) {
-                      _titleController.clear();
-                      _descController.clear();
-                    }),
+                    onPressed: () {
+                      imagePicker("gallery", _titleController.text,
+                              _descController.text)
+                          .then((value) {
+                        _titleController.clear();
+                        _descController.clear();
+                      });
+                    },
                     icon: const Icon(Icons.library_add),
                     label: const Text('Gallery'),
                   ),
