@@ -32,7 +32,9 @@ class _BisnisPageState extends State<BisnisPage> {
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _collection.orderBy("timestamp", descending: true).snapshots(),
+                  stream: _collection
+                      .orderBy("timestamp", descending: true)
+                      .snapshots(),
                   builder: (_, snapshot) {
                     if (snapshot.hasData) {
                       return SingleChildScrollView(
@@ -72,34 +74,33 @@ class _BisnisPageState extends State<BisnisPage> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         trailing: IconButton(
-                                          onPressed: () =>
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) => AlertDialog(
-                                                  content: Text(
-                                                      "Apakah anda yakin ingin menghapus item ini ?"),
-                                                  title: Text("Hapus item"),
-                                                  actions: [
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          _collection
-                                                              .doc(e.id)
-                                                              .delete();
-                                                        });
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("Ya"),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("Tidak"),
-                                                    ),
-                                                  ],
+                                          onPressed: () => showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              content: Text(
+                                                  "Apakah anda yakin ingin menghapus item ini ?"),
+                                              title: Text("Hapus item"),
+                                              actions: [
+                                                FlatButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _collection
+                                                          .doc(e.id)
+                                                          .delete();
+                                                    });
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Ya"),
                                                 ),
-                                              ),
+                                                FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Tidak"),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                           icon: const Icon(
                                             Icons.delete,
                                             color: Colors.red,
@@ -112,12 +113,18 @@ class _BisnisPageState extends State<BisnisPage> {
                         ),
                       );
                     } else {
-                      return Text("Loading...");
+                      return Container(
+                        height: 250,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
                     }
                   },
                 ),
               ),
               TextFormField(
+                maxLines: null,
                 controller: _titleController,
                 decoration: InputDecoration(
                   filled: true,
@@ -132,6 +139,7 @@ class _BisnisPageState extends State<BisnisPage> {
                 height: 15,
               ),
               TextFormField(
+                maxLines: null,
                 controller: _descController,
                 decoration: InputDecoration(
                   filled: true,

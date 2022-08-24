@@ -66,7 +66,7 @@ class _DetailState extends State<Detail> {
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                             color: Colors.black,
-                            fontSize: 14,
+                            fontSize: 16,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
